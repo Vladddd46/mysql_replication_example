@@ -32,5 +32,23 @@ CREATE USER 'slave'@'%' IDENTIFIED BY 'create_slave_password';<br>
 GRANT REPLICATION SLAVE ON *.* TO 'slave'@'%';<br>
 FLUSH PRIVILEGES;<br>
 
+Create database and table for replication on both master and slave mysql servers: <br>
+CREATE DATABASE IF NOT EXISTS replication; <br>
+CREATE TABLE IF NOT EXISTS users ( id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), surname VARCHAR(255), age INT); <br>
 
+Enter in mysql server in docker container (you should have already been logged in for creating database and table, which is mentioned above) <br>
+mysql -u [user] -p [password]<br>
+CHANGE MASTER TO
+  MASTER_HOST='IP_ADDRESS_OF_MASTER_HOST',
+  MASTER_USER='slave',
+  MASTER_PASSWORD='<password>',
+  MASTER_AUTO_POSITION = 1; <br>
+START SLAVE; <br>
+SHOW SLAVE STATUS; <br>
+<br>
+Now replication is done. If you write in master's 'replication' database, then in slave's server all data will be duplicated.<br>
+If something went wrong, you can check error message by running SHOW SLAVE STATUS; on slave's server. Personally I got error with auth.
+This helped: <br>
+ALTER USER 'slave'@'%' IDENTIFIED WITH 'mysql_native_password' BY 'SLAVE_PASSWORD';<br>
+FLUSH PRIVILEGES;<br>
 </p>
