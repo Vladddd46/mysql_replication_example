@@ -13,6 +13,24 @@ server-id=2 # define server id <br>
 enforce-gtid-consistency = 1 # enabling gtid function <br>
 gtid-mode = ON # enabling gtid function <br>
 
+Edit  /etc/my.cnf file in (master)MacOs host: <br>
+[mysqld]<br>
+server-id = 1<br>
+log_bin = /var/log/mysql/mysql-bin.log # path to folder with logs<br>
+binlog_format = ROW<br>
+enforce-gtid-consistency = 1<br>
+gtid-mode = ON<br>
 
-Ensure /etc/my.cnf have enough permissions on both master,slave hosts.<br>
+
+Ensure /etc/my.cnf have enough permissions on both master, slave hosts.<br>
+Also after editing /etc/my.cnf files restart mysql servers on both hosts (MacOs and docker)<br>
+
+Login in mysql server on master host(MacOs):<br>
+mysql -u [user] -p [password]<br>
+Create user for slave replication:<br>
+CREATE USER 'slave'@'%' IDENTIFIED BY 'create_slave_password';<br>
+GRANT REPLICATION SLAVE ON *.* TO 'slave'@'%';<br>
+FLUSH PRIVILEGES;<br>
+
+
 </p>
